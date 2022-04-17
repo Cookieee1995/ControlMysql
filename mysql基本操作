@@ -1,0 +1,212 @@
+操作数据库（文件夹）：
+
+创建数据库： create database 数据库名 charset 字符编码;
+
+例子：
+mysql> create database db1 charset utf8;
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+
+查看数据库： show databases;
+
+例子：
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| db1                |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+
+修改数据库编码：alter database 数据库名 charset 编码;
+
+例子：
+mysql> alter database db1 charset gbk;
+Query OK, 1 row affected (0.01 sec)
+
+
+删除数据库：drop database 数据库名;
+
+例子：
+mysql> drop database db1;
+Query OK, 0 rows affected (0.02 sec)
+
+----------------------------------------------------------------------------------------
+
+切换到需要操作的数据库：use 数据库名;
+例子：
+mysql> use db1;
+Database changed
+
+查看当前所在的库：select database();
+例子：
+mysql> select database();
++------------+
+| database() |
++------------+
+| db1        |
++------------+
+1 row in set (0.00 sec)
+
+----------------------------------------------------------------------------------------
+操作表（文件）：
+
+新增表：create table 数据库名.表名(字段1 字段1的类型，字段2...);
+
+例子：
+mysql> create table t1(id int,name char(10),age int);
+Query OK, 0 rows affected (0.06 sec)
+
+查看表：show tables;
+
+例子1：
+mysql> show tables;
++---------------+
+| Tables_in_db1 |
++---------------+
+| t1            |
++---------------+
+1 row in set (0.00 sec)
+
+
+例子2：
+mysql> show create table t1;
+
+
+查看表结构：
+
+例子：desc 表名;
+mysql> desc t1;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int      | YES  |     | NULL    |       |
+| name  | char(10) | YES  |     | NULL    |       |
+| age   | int      | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+
+删除表：drop table 表名;
+
+例子：
+mysql> drop table t1;
+Query OK, 0 rows affected (0.06 sec)
+
+
+更改表的编码： alter table 表名 charset 编码;
+
+例子：
+alter table t1 charset gbk;
+
+
+增加表的字段：alter table 表名 add 字段名;
+
+例子：
+mysql> alter table t1 add sex char;
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+删除字段：alter table 表名 drop sex;
+
+例子：
+mysql> alter table t1 drop sex;
+Query OK, 0 rows affected (0.08 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+更改字段宽度：alter table 表名 modify 字段 字段名;
+
+例子：
+mysql> alter table t1 modify sex char(6);
+Query OK, 0 rows affected (0.13 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+更改字段名：alter table 表名 change 原字段名 新字段名 类型;
+
+例子：
+mysql> alter table t1 change sex SEX char(6);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> desc t1;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int      | YES  |     | NULL    |       |
+| name  | char(10) | YES  |     | NULL    |       |
+| age   | int      | YES  |     | NULL    |       |
+| SEX   | char(6)  | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+----------------------------------------------------------------------
+
+
+操作记录
+
+增加记录： insert into t1(字段名1,...) value
+          (...),
+          (...),
+          (...),
+          (...);
+
+例子：
+mysql> insert into db1.t1(id,name,age,SEX) values
+    -> (1,'egon',18,'male'),
+    -> (2,'egon2',28,'male'),
+    -> (3,'egon3',38,'male'),
+    -> (4,'egon4',48,'male');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+# 是否传参数取决于设置是否可以传空
+
+
+查记录： select 字段...(*代表全部) from 表名;
+
+例子：
+mysql> select id,name from t1;
++------+-------+
+| id   | name  |
++------+-------+
+|    1 | egon  |
+|    2 | egon2 |
+|    3 | egon3 |
+|    4 | egon4 |
++------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from t1;
++------+-------+------+------+
+| id   | name  | age  | SEX  |
++------+-------+------+------+
+|    1 | egon  |   18 | male |
+|    2 | egon2 |   28 | male |
+|    3 | egon3 |   38 | male |
+|    4 | egon4 |   48 | male |
++------+-------+------+------+
+4 rows in set (0.00 sec)
+
+
+改记录： update 表名 set 指定记录;
+
+例子：
+mysql> update t1 set name='EGON4';
+Query OK, 4 rows affected (0.02 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+
+删除记录：delete from 表名;        # 不会重置表 只清空记录
+         truncate 表名;           # 重置+清空表的记录
+
+例子：
+mysql> truncate t1;
+Query OK, 0 rows affected (0.07 sec)
+mysql> select * from t1;
+Empty set (0.00 sec)
+
